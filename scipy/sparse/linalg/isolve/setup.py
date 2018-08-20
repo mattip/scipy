@@ -31,6 +31,8 @@ def configuration(parent_package='',top_path=None):
 
     config.add_extension('_iterative',
                          sources=sources,
+                         define_macros = [
+                            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),],
                          extra_info=lapack_opt)
 
     config.add_data_dir('tests')

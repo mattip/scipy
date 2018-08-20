@@ -46,9 +46,7 @@ cdef extern from "numpy/arrayobject.h":
                                      void* data,
                                      int flags,
                                      object parent)
-
-cdef extern from "numpy_rephrasing.h":
-    void PyArray_Set_BASE(cnp.ndarray arr, object obj)
+    void PyArray_SetBaseObject(cnp.ndarray arr, object obj)
 
 # Numpy must be initialized before any code using the numpy C-API
 # directly
@@ -457,7 +455,7 @@ cdef class VarReader5:
             el_count = byte_count // dt.itemsize
         cdef int flags = 0
         if copy:
-            flags = cnp.NPY_WRITEABLE
+            flags = cnp.NPY_ARRAY_WRITEABLE
         Py_INCREF(<object> dt)
         el = PyArray_NewFromDescr(&PyArray_Type,
                                    dt,
@@ -468,7 +466,7 @@ cdef class VarReader5:
                                    flags,
                                    <object>NULL)
         Py_INCREF(<object> data)
-        PyArray_Set_BASE(el, data)
+        PyArray_SetBaseObject(el, data)
         return el
 
     cdef inline object read_int8_string(self):

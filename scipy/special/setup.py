@@ -66,7 +66,8 @@ def configuration(parent_package='',top_path=None):
                          sources=['specfun.pyf'],
                          f2py_options=['--no-wrap-functions'],
                          depends=specfun_src,
-                         define_macros=[],
+                         define_macros = [
+                            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),],
                          libraries=['sc_specfun'])
 
     # Extension _ufuncs

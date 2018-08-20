@@ -45,7 +45,9 @@ def configuration(parent_package='',top_path=None):
                'util.h']
     depends = [os.path.join('sparsetools', hdr) for hdr in depends],
     config.add_extension('_sparsetools',
-                         define_macros=[('__STDC_FORMAT_MACROS', 1)],
+                         define_macros=[('__STDC_FORMAT_MACROS', 1),
+                            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),
+                                       ],
                          depends=depends,
                          include_dirs=['sparsetools'],
                          sources=[os.path.join('sparsetools', 'sparsetools.cxx'),
@@ -53,7 +55,7 @@ def configuration(parent_package='',top_path=None):
                                   os.path.join('sparsetools', 'csc.cxx'),
                                   os.path.join('sparsetools', 'bsr.cxx'),
                                   os.path.join('sparsetools', 'other.cxx'),
-                                  get_sparsetools_sources]
+                                  get_sparsetools_sources],
                          )
 
     return config

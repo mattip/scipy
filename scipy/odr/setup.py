@@ -19,6 +19,10 @@ def configuration(parent_package='', top_path=None):
     else:
         warnings.warn(BlasNotFoundError.__doc__)
         libodr_files.append('d_lpkbls.f')
+    if blas_info.get('define_macros', None):
+        blas_info['define_macros'].append(("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"))
+    else:
+        blas_info['define_macros'] =[("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION")]
 
     odrpack_src = [join('odrpack', x) for x in libodr_files]
     config.add_library('odrpack', sources=odrpack_src)

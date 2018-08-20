@@ -26,6 +26,8 @@ def configuration(parent_package='', top_path=None):
     config.add_extension('_fblas',
                          sources=sources,
                          depends=['fblas_l?.pyf.src'],
+                         define_macros=[
+                            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),],
                          extra_info=lapack_opt
                          )
 
@@ -46,6 +48,8 @@ def configuration(parent_package='', top_path=None):
                                   'flapack_sym_herm.pyf.src',
                                   'flapack_other.pyf.src',
                                   'flapack_user.pyf.src'],
+                         define_macros=[
+                            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),],
                          extra_info=lapack_opt
                          )
 
@@ -67,6 +71,8 @@ def configuration(parent_package='', top_path=None):
     # _flinalg:
     config.add_extension('_flinalg',
                          sources=[join('src', 'det.f'), join('src', 'lu.f')],
+                         define_macros=[
+                            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),],
                          extra_info=lapack_opt
                          )
 
@@ -119,6 +125,8 @@ def configuration(parent_package='', top_path=None):
                                  routines_to_split)
     fnames = [join('src', 'id_dist', 'src', f) for f in fnames]
     config.add_extension('_interpolative', fnames + ["interpolative.pyf"],
+                         define_macros=[
+                            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),],
                          extra_info=lapack_opt
                          )
 

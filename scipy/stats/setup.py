@@ -17,6 +17,8 @@ def configuration(parent_package='',top_path=None):
         sources=['statlib.pyf'],
         f2py_options=['--no-wrap-functions'],
         libraries=['statlib'],
+        define_macros = [
+            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),],
         depends=statlib_src
     )
 

@@ -16,6 +16,8 @@ def configuration(parent_package='',top_path=None):
     # Pop off the libraries list so it can be combined with
     # additional required libraries
     lapack_libs = lapack_opt.pop('libraries', [])
+    lapack_opt['define_macros'] = [
+                        ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),]
 
     mach_src = [join('mach','*.f')]
     quadpack_src = [join('quadpack', '*.f')]
@@ -79,6 +81,8 @@ def configuration(parent_package='',top_path=None):
     config.add_extension('_dop',
                          sources=['dop.pyf'],
                          libraries=['dop'],
+                         define_macros=[
+                            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),],
                          depends=dop_src)
 
     config.add_extension('_test_multivariate',

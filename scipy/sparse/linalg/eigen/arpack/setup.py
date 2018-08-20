@@ -25,6 +25,8 @@ def configuration(parent_package='',top_path=None):
                          sources=ext_sources,
                          libraries=['arpack_scipy'],
                          extra_info=lapack_opt,
+                         define_macros = [
+                            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),],
                          depends=arpack_sources,
                          )
 

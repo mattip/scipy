@@ -40,53 +40,53 @@ static PyObject *fitpack_error;
  */
 
 #if defined(UPPERCASE_FORTRAN)
-	#if defined(NO_APPEND_FORTRAN)
-	/* nothing to do */
-	#else
-		#define CURFIT CURFIT_
-		#define PERCUR PERCUR_
-		#define SPALDE SPALDE_
-		#define SPLDER SPLDER_
-		#define SPLEV  SPLEV_
-		#define SPLINT SPLINT_
-		#define SPROOT SPROOT_
-		#define PARCUR PARCUR_
-		#define CLOCUR CLOCUR_
-		#define SURFIT SURFIT_
-		#define BISPEV BISPEV_
-		#define PARDER PARDER_
-		#define INSERT INSERT_
-	#endif
+    #if defined(NO_APPEND_FORTRAN)
+    /* nothing to do */
+    #else
+        #define CURFIT CURFIT_
+        #define PERCUR PERCUR_
+        #define SPALDE SPALDE_
+        #define SPLDER SPLDER_
+        #define SPLEV  SPLEV_
+        #define SPLINT SPLINT_
+        #define SPROOT SPROOT_
+        #define PARCUR PARCUR_
+        #define CLOCUR CLOCUR_
+        #define SURFIT SURFIT_
+        #define BISPEV BISPEV_
+        #define PARDER PARDER_
+        #define INSERT INSERT_
+    #endif
 #else
-	#if defined(NO_APPEND_FORTRAN)
-		#define CURFIT curfit
-		#define PERCUR percur
-		#define SPALDE spalde
-		#define SPLDER splder
-		#define SPLEV splev
-		#define SPLINT splint
-		#define SPROOT sproot
-		#define PARCUR parcur
-		#define CLOCUR clocur
-		#define SURFIT surfit
-		#define BISPEV bispev
-		#define PARDER parder
-		#define INSERT insert
-	#else
-		#define CURFIT curfit_
-		#define PERCUR percur_
-		#define SPALDE spalde_
-		#define SPLDER splder_
-		#define SPLEV splev_
-		#define SPLINT splint_
-		#define SPROOT sproot_
-		#define PARCUR parcur_
-		#define CLOCUR clocur_
-		#define SURFIT surfit_
-		#define BISPEV bispev_
-		#define PARDER parder_
-		#define INSERT insert_
-	#endif
+    #if defined(NO_APPEND_FORTRAN)
+        #define CURFIT curfit
+        #define PERCUR percur
+        #define SPALDE spalde
+        #define SPLDER splder
+        #define SPLEV splev
+        #define SPLINT splint
+        #define SPROOT sproot
+        #define PARCUR parcur
+        #define CLOCUR clocur
+        #define SURFIT surfit
+        #define BISPEV bispev
+        #define PARDER parder
+        #define INSERT insert
+    #else
+        #define CURFIT curfit_
+        #define PERCUR percur_
+        #define SPALDE spalde_
+        #define SPLDER splder_
+        #define SPLEV splev_
+        #define SPLINT splint_
+        #define SPROOT sproot_
+        #define PARCUR parcur_
+        #define CLOCUR clocur_
+        #define SURFIT surfit_
+        #define BISPEV bispev_
+        #define PARDER parder_
+        #define INSERT insert_
+    #endif
 #endif
 
 void CURFIT(int*,int*,double*,double*,double*,double*,
@@ -149,15 +149,15 @@ fitpack_bispev(PyObject *dummy, PyObject *args)
             || ap_ty == NULL) {
         goto fail;
     }
-    x = (double *) ap_x->data;
-    y = (double *) ap_y->data;
-    c = (double *) ap_c->data;
-    tx = (double *) ap_tx->data;
-    ty = (double *) ap_ty->data;
-    nx = ap_tx->dimensions[0];
-    ny = ap_ty->dimensions[0];
-    mx = ap_x->dimensions[0];
-    my = ap_y->dimensions[0];
+    x = (double *)PyArray_DATA(ap_x);
+    y = (double *)PyArray_DATA(ap_y);
+    c = (double *)PyArray_DATA(ap_c);
+    tx = (double *)PyArray_DATA(ap_tx);
+    ty = (double *)PyArray_DATA(ap_ty);
+    nx = PyArray_DIMS(ap_tx)[0];
+    ny = PyArray_DIMS(ap_ty)[0];
+    mx = PyArray_DIMS(ap_x)[0];
+    my = PyArray_DIMS(ap_y)[0];
     mxy = mx*my;
     if (my != 0 && mxy/my != mx) {
         /* Integer overflow */
@@ -170,7 +170,7 @@ fitpack_bispev(PyObject *dummy, PyObject *args)
     if (ap_z == NULL) {
         goto fail;
     }
-    z = (double *) ap_z->data;
+    z = (double *)PyArray_DATA( ap_z);
     if (nux || nuy) {
         lwrk = mx*(kx + 1 - nux) + my*(ky + 1 - nuy) + (nx - kx - 1)*(ny - ky - 1);
     }
@@ -248,11 +248,11 @@ fitpack_surfit(PyObject *dummy, PyObject *args)
             || ap_wrk == NULL) {
         goto fail;
     }
-    x = (double *) ap_x->data;
-    y = (double *) ap_y->data;
-    z = (double *) ap_z->data;
-    w = (double *) ap_w->data;
-    m = ap_x->dimensions[0];
+    x = (double *)PyArray_DATA( ap_x);
+    y = (double *)PyArray_DATA( ap_y);
+    z = (double *)PyArray_DATA( ap_z);
+    w = (double *)PyArray_DATA( ap_w);
+    m = PyArray_DIMS(ap_x)[0];
     nmax = nxest;
     if (nmax < nyest) {
         nmax = nyest;
@@ -281,15 +281,15 @@ fitpack_surfit(PyObject *dummy, PyObject *args)
         if (ap_tx == NULL || ap_ty == NULL) {
             goto fail;
         }
-        nx = nxo = ap_tx->dimensions[0];
-        ny = nyo = ap_ty->dimensions[0];
-        memcpy(tx,ap_tx->data,nx*sizeof(double));
-        memcpy(ty,ap_ty->data,ny*sizeof(double));
+        nx = nxo = PyArray_DIMS(ap_tx)[0];
+        ny = nyo = PyArray_DIMS(ap_ty)[0];
+        memcpy(tx,PyArray_DATA(ap_tx),nx*sizeof(double));
+        memcpy(ty,PyArray_DATA(ap_ty),ny*sizeof(double));
     }
     if (iopt==1) {
         lc = (nx - kx - 1)*(ny - ky - 1);
-        memcpy(wrk1, ap_wrk->data, lc*sizeof(double));
-        /*memcpy(iwrk,ap_iwrk->data,n*sizeof(int));*/
+        memcpy(wrk1, PyArray_DATA(ap_wrk), lc*sizeof(double));
+        /*memcpy(iwrk,PyArray_DATA(ap_iwrk),n*sizeof(int));*/
     }
     SURFIT(&iopt, &m, x, y, z, w, &xb, &xe, &yb, &ye, &kx, &ky,
             &s, &nxest, &nyest, &nmax, &eps, &nx, tx, &ny, ty,
@@ -333,7 +333,7 @@ fitpack_surfit(PyObject *dummy, PyObject *args)
         }
         /*ap_iwrk = (PyArrayObject *)PyArray_SimpleNew(1,&n,NPY_INT);*/
     }
-    if (ap_wrk->dimensions[0] < lc) {
+    if (PyArray_DIMS(ap_wrk)[0] < lc) {
         Py_XDECREF(ap_wrk);
         dims[0] = lc;
         ap_wrk = (PyArrayObject *)PyArray_SimpleNew(1, dims, NPY_DOUBLE);
@@ -341,11 +341,11 @@ fitpack_surfit(PyObject *dummy, PyObject *args)
             goto fail;
         }
     }
-    memcpy(ap_tx->data, tx, nx*sizeof(double));
-    memcpy(ap_ty->data, ty, ny*sizeof(double));
-    memcpy(ap_c->data, c, lc*sizeof(double));
-    memcpy(ap_wrk->data, wrk1, lc*sizeof(double));
-    /*memcpy(ap_iwrk->data,iwrk,n*sizeof(int));*/
+    memcpy(PyArray_DATA(ap_tx), tx, nx*sizeof(double));
+    memcpy(PyArray_DATA(ap_ty), ty, ny*sizeof(double));
+    memcpy(PyArray_DATA(ap_c), c, lc*sizeof(double));
+    memcpy(PyArray_DATA(ap_wrk), wrk1, lc*sizeof(double));
+    /*memcpy(PyArray_DATA(ap_iwrk),iwrk,n*sizeof(int));*/
     free(wa);
     Py_DECREF(ap_x);
     Py_DECREF(ap_y);
@@ -403,11 +403,11 @@ fitpack_parcur(PyObject *dummy, PyObject *args)
             || ap_iwrk == NULL) {
         goto fail;
     }
-    x = (double *) ap_x->data;
-    u = (double *) ap_u->data;
-    w = (double *) ap_w->data;
-    m = ap_w->dimensions[0];
-    mx = ap_x->dimensions[0];
+    x = (double *)PyArray_DATA( ap_x);
+    u = (double *)PyArray_DATA( ap_u);
+    w = (double *)PyArray_DATA( ap_w);
+    m = PyArray_DIMS(ap_w)[0];
+    mx = PyArray_DIMS(ap_x)[0];
     idim = mx/m;
     if (per) {
         lwrk = m*(k + 1) + nest*(7 + idim + 5*k);
@@ -430,12 +430,12 @@ fitpack_parcur(PyObject *dummy, PyObject *args)
         if (ap_t == NULL) {
             goto fail;
         }
-        n = no = ap_t->dimensions[0];
-        memcpy(t, ap_t->data, n*sizeof(double));
+        n = no = PyArray_DIMS(ap_t)[0];
+        memcpy(t, PyArray_DATA(ap_t), n*sizeof(double));
     }
     if (iopt == 1) {
-        memcpy(wrk, ap_wrk->data, n*sizeof(double));
-        memcpy(iwrk, ap_iwrk->data, n*sizeof(int));
+        memcpy(wrk, PyArray_DATA(ap_wrk), n*sizeof(double));
+        memcpy(iwrk, PyArray_DATA(ap_iwrk), n*sizeof(int));
     }
     if (per) {
         CLOCUR(&iopt, &ipar, &idim, &m, u, &mx, x, w, &k, &s, &nest,
@@ -468,11 +468,11 @@ fitpack_parcur(PyObject *dummy, PyObject *args)
             goto fail;
         }
     }
-    memcpy(ap_t->data, t, n*sizeof(double));
+    memcpy(PyArray_DATA(ap_t), t, n*sizeof(double));
     for (i = 0; i < idim; i++)
-        memcpy((double *)ap_c->data + i*(n - k - 1), c + i*n, (n - k - 1)*sizeof(double));
-    memcpy(ap_wrk->data, wrk, n*sizeof(double));
-    memcpy(ap_iwrk->data, iwrk, n*sizeof(int));
+        memcpy((double *)PyArray_DATA(ap_c) + i*(n - k - 1), c + i*n, (n - k - 1)*sizeof(double));
+    memcpy(PyArray_DATA(ap_wrk), wrk, n*sizeof(double));
+    memcpy(PyArray_DATA(ap_iwrk), iwrk, n*sizeof(int));
     free(wa);
     Py_DECREF(ap_x);
     Py_DECREF(ap_w);
@@ -520,10 +520,10 @@ fitpack_curfit(PyObject *dummy, PyObject *args)
             || ap_iwrk == NULL) {
         goto fail;
     }
-    x = (double *) ap_x->data;
-    y = (double *) ap_y->data;
-    w = (double *) ap_w->data;
-    m = ap_x->dimensions[0];
+    x = (double *) PyArray_DATA(ap_x);
+    y = (double *) PyArray_DATA(ap_y);
+    w = (double *) PyArray_DATA(ap_w);
+    m = PyArray_DIMS(ap_x)[0];
     if (per) {
         lwrk = m*(k + 1) + nest*(8 + 5*k);
     }
@@ -544,12 +544,12 @@ fitpack_curfit(PyObject *dummy, PyObject *args)
         if (ap_t == NULL) {
             goto fail;
         }
-        n = no = ap_t->dimensions[0];
-        memcpy(t, ap_t->data, n*sizeof(double));
+        n = no = PyArray_DIMS(ap_t)[0];
+        memcpy(t, PyArray_DATA(ap_t), n*sizeof(double));
     }
     if (iopt == 1) {
-        memcpy(wrk, ap_wrk->data, n*sizeof(double));
-        memcpy(iwrk, ap_iwrk->data, n*sizeof(int));
+        memcpy(wrk, PyArray_DATA(ap_wrk), n*sizeof(double));
+        memcpy(iwrk, PyArray_DATA(ap_iwrk), n*sizeof(int));
     }
     if (per)
         PERCUR(&iopt, &m, x, y, w, &k, &s, &nest, &n, t, c, &fp, wrk,
@@ -585,10 +585,10 @@ fitpack_curfit(PyObject *dummy, PyObject *args)
             goto fail;
         }
     }
-    memcpy(ap_t->data, t, n*sizeof(double));
-    memcpy(ap_c->data, c, lc*sizeof(double));
-    memcpy(ap_wrk->data, wrk, n*sizeof(double));
-    memcpy(ap_iwrk->data, iwrk, n*sizeof(int));
+    memcpy(PyArray_DATA(ap_t), t, n*sizeof(double));
+    memcpy(PyArray_DATA(ap_c), c, lc*sizeof(double));
+    memcpy(PyArray_DATA(ap_wrk), wrk, n*sizeof(double));
+    memcpy(PyArray_DATA(ap_iwrk), iwrk, n*sizeof(int));
     free(wa);
     Py_DECREF(ap_x);
     Py_DECREF(ap_y);
@@ -627,17 +627,17 @@ fitpack_spl_(PyObject *dummy, PyObject *args)
     if ((ap_x == NULL || ap_t == NULL || ap_c == NULL)) {
         goto fail;
     }
-    x = (double *)ap_x->data;
-    m = ap_x->dimensions[0];
-    t = (double *)ap_t->data;
-    c = (double *)ap_c->data;
-    n = ap_t->dimensions[0];
+    x = (double *)PyArray_DATA(ap_x);
+    m = PyArray_DIMS(ap_x)[0];
+    t = (double *)PyArray_DATA(ap_t);
+    c = (double *)PyArray_DATA(ap_c);
+    n = PyArray_DIMS(ap_t)[0];
     dims[0] = m;
     ap_y = (PyArrayObject *)PyArray_SimpleNew(1,dims,NPY_DOUBLE);
     if (ap_y == NULL) {
         goto fail;
     }
-    y = (double *)ap_y->data;
+    y = (double *)PyArray_DATA(ap_y);
     if ((wrk = malloc(n*sizeof(double))) == NULL) {
         PyErr_NoMemory();
         goto fail;
@@ -681,15 +681,15 @@ fitpack_splint(PyObject *dummy, PyObject *args)
     if ((ap_t == NULL || ap_c == NULL)) {
         goto fail;
     }
-    t = (double *)ap_t->data;
-    c = (double *)ap_c->data;
-    n = ap_t->dimensions[0];
+    t = (double *)PyArray_DATA(ap_t);
+    c = (double *)PyArray_DATA(ap_c);
+    n = PyArray_DIMS(ap_t)[0];
     dims[0] = n;
     ap_wrk = (PyArrayObject *)PyArray_SimpleNew(1, dims, NPY_DOUBLE);
     if (ap_wrk == NULL) {
         goto fail;
     }
-    wrk = (double *)ap_wrk->data;
+    wrk = (double *)PyArray_DATA(ap_wrk);
     aint = SPLINT(t,&n,c,&k,&a,&b,wrk);
     Py_DECREF(ap_c);
     Py_DECREF(ap_t);
@@ -720,9 +720,9 @@ fitpack_sproot(PyObject *dummy, PyObject *args)
     if ((ap_t == NULL || ap_c == NULL)) {
         goto fail;
     }
-    t = (double *)ap_t->data;
-    c = (double *)ap_c->data;
-    n = ap_t->dimensions[0];
+    t = (double *)PyArray_DATA(ap_t);
+    c = (double *)PyArray_DATA(ap_c);
+    n = PyArray_DIMS(ap_t)[0];
     if ((z = malloc(mest*sizeof(double))) == NULL) {
         PyErr_NoMemory();
         goto fail;
@@ -737,7 +737,7 @@ fitpack_sproot(PyObject *dummy, PyObject *args)
     if (ap_z == NULL) {
         goto fail;
     }
-    memcpy(ap_z->data,z,m*sizeof(double));
+    memcpy(PyArray_DATA(ap_z),z,m*sizeof(double));
     free(z);
     Py_DECREF(ap_c);
     Py_DECREF(ap_t);
@@ -768,16 +768,16 @@ fitpack_spalde(PyObject *dummy, PyObject *args)
     if ((ap_t == NULL || ap_c == NULL)) {
         goto fail;
     }
-    t = (double *)ap_t->data;
-    c = (double *)ap_c->data;
-    n = ap_t->dimensions[0];
+    t = (double *)PyArray_DATA(ap_t);
+    c = (double *)PyArray_DATA(ap_c);
+    n = PyArray_DIMS(ap_t)[0];
     k1 = k + 1;
     dims[0] = k1;
     ap_d = (PyArrayObject *)PyArray_SimpleNew(1, dims, NPY_DOUBLE);
     if (ap_d == NULL) {
         goto fail;
     }
-    d = (double *)ap_d->data;
+    d = (double *)PyArray_DATA(ap_d);
     SPALDE(t, &n, c, &k1, &x, d, &ier);
     Py_DECREF(ap_c);
     Py_DECREF(ap_t);
@@ -810,9 +810,9 @@ fitpack_insert(PyObject *dummy, PyObject*args)
     if (ap_t_in == NULL || ap_c_in == NULL) {
         goto fail;
     }
-    t_in = (double *)ap_t_in->data;
-    c_in = (double *)ap_c_in->data;
-    n = ap_t_in->dimensions[0];
+    t_in = (double *)PyArray_DATA(ap_t_in);
+    c_in = (double *)PyArray_DATA(ap_c_in);
+    n = PyArray_DIMS(ap_t_in)[0];
     nest = n + m;
     dims[0] = nest;
     ap_t_out = (PyArrayObject *)PyArray_SimpleNew(1, dims, NPY_DOUBLE);
@@ -820,8 +820,8 @@ fitpack_insert(PyObject *dummy, PyObject*args)
     if (ap_t_out == NULL || ap_c_out == NULL) {
         goto fail;
     }
-    t_out = (double *)ap_t_out->data;
-    c_out = (double *)ap_c_out->data;
+    t_out = (double *)PyArray_DATA(ap_t_out);
+    c_out = (double *)PyArray_DATA(ap_c_out);
 
     /*
      * Call the INSERT routine m times to insert m-multiplicity knot, ie.:
@@ -943,9 +943,9 @@ _bspleval(PyObject *dummy, PyObject *args)
         kk = 1;
     }
     dk = (k == 0 ? 0 : 1);
-    x_i = (PyArrayObject *)PyArray_FROMANY(x_i_py, NPY_DOUBLE, 1, 1, NPY_ALIGNED);
-    coef = (PyArrayObject *)PyArray_FROMANY(coef_py, NPY_DOUBLE, 1, 1, NPY_ALIGNED);
-    xx = (PyArrayObject *)PyArray_FROMANY(xx_py, NPY_DOUBLE, 0, 0, NPY_ALIGNED);
+    x_i = (PyArrayObject *)PyArray_FROMANY(x_i_py, NPY_DOUBLE, 1, 1, NPY_ARRAY_ALIGNED);
+    coef = (PyArrayObject *)PyArray_FROMANY(coef_py, NPY_DOUBLE, 1, 1, NPY_ARRAY_ALIGNED);
+    xx = (PyArrayObject *)PyArray_FROMANY(xx_py, NPY_DOUBLE, 0, 0, NPY_ARRAY_ALIGNED);
     if (x_i == NULL || coef == NULL || xx == NULL) {
         goto fail;
     }
@@ -959,7 +959,7 @@ _bspleval(PyObject *dummy, PyObject *args)
     }
 
     /* create output values */
-    yy = (PyArrayObject *)PyArray_EMPTY(xx->nd, xx->dimensions, NPY_DOUBLE, 0);
+    yy = (PyArrayObject *)PyArray_EMPTY(PyArray_NDIM(xx), PyArray_DIMS(xx), NPY_DOUBLE, 0);
     if (yy == NULL) {
         goto fail;
     }
@@ -1172,7 +1172,7 @@ _bsplmat(PyObject *dummy, PyObject *args) {
     }
 
     /* Not-equally spaced */
-    x_i = (PyArrayObject *)PyArray_FROMANY(x_i_py, NPY_DOUBLE, 1, 1, NPY_ALIGNED);
+    x_i = (PyArrayObject *)PyArray_FROMANY(x_i_py, NPY_DOUBLE, 1, 1, NPY_ARRAY_ALIGNED);
     if (x_i == NULL) {
         goto fail;
     }
@@ -1366,7 +1366,7 @@ _bspldismat(PyObject *dummy, PyObject *args)
     }
 
     /* Not-equally spaced */
-    x_i = (PyArrayObject *)PyArray_FROMANY(x_i_py, NPY_DOUBLE, 1, 1, NPY_ALIGNED);
+    x_i = (PyArrayObject *)PyArray_FROMANY(x_i_py, NPY_DOUBLE, 1, 1, NPY_ARRAY_ALIGNED);
     if (x_i == NULL) {
         goto fail;
     }

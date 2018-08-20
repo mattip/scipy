@@ -29,6 +29,8 @@ def configuration(parent_package='', top_path=None):
 
     cfg = dict(get_sys_info('lapack_opt'))
     cfg.setdefault('include_dirs', []).extend(inc_dirs)
+    cfg.setdefault('define_macros', []).extend(
+                            [("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),])
     config.add_extension('qhull',
                          sources=['qhull.c'] + qhull_src,
                          **cfg)
@@ -63,12 +65,16 @@ def configuration(parent_package='', top_path=None):
     config.add_extension('ckdtree',
                          sources=['ckdtree.cxx'] + ckdtree_src,
                          depends=ckdtree_dep,
+                         define_macros = [
+                            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),],
                          include_dirs=inc_dirs + [join('ckdtree', 'src')])
     # _distance_wrap
     config.add_extension('_distance_wrap',
                          sources=[join('src', 'distance_wrap.c')],
                          depends=[join('src', 'distance_impl.h')],
                          include_dirs=[get_numpy_include_dirs()],
+                         define_macros = [
+                            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),],
                          extra_info=get_misc_info("npymath"))
 
     config.add_extension('_voronoi',

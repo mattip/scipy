@@ -6,7 +6,10 @@ def configuration(parent_package='',top_path=None):
     config = Configuration('io', parent_package, top_path)
 
     config.add_extension('_test_fortran',
-                         sources=['_test_fortran.pyf', '_test_fortran.f'])
+                         sources=['_test_fortran.pyf', '_test_fortran.f'],
+                         define_macros=[
+                            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),],
+                        )
 
     config.add_data_dir('tests')
     config.add_subpackage('matlab')

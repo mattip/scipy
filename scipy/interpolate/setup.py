@@ -8,6 +8,8 @@ def configuration(parent_package='',top_path=None):
     from scipy._build_utils.system_info import get_info
 
     lapack_opt = get_info('lapack_opt', notfound_action=2)
+    lapack_opt['define_macros'] = [
+                        ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),]
 
     config = Configuration('interpolate', parent_package, top_path)
 
@@ -15,6 +17,8 @@ def configuration(parent_package='',top_path=None):
     config.add_library('fitpack', sources=fitpack_src)
 
     config.add_extension('interpnd',
+                         define_macros=[
+                            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),],
                          sources=['interpnd.c'])
 
     config.add_extension('_ppoly',
@@ -30,19 +34,26 @@ def configuration(parent_package='',top_path=None):
                          sources=['src/_fitpackmodule.c'],
                          libraries=['fitpack'],
                          depends=(['src/__fitpack.h','src/multipack.h']
-                                  + fitpack_src)
+                                  + fitpack_src),
+                         define_macros=[
+                            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),],
                          )
 
     config.add_extension('dfitpack',
                          sources=['src/fitpack.pyf'],
                          libraries=['fitpack'],
                          depends=fitpack_src,
+                         define_macros=[
+                            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),],
                          )
 
     config.add_extension('_interpolate',
                          sources=['src/_interpolate.cpp'],
                          include_dirs=['src'],
-                         depends=['src/interpolate.h'])
+                         depends=['src/interpolate.h'],
+                         define_macros=[
+                            ("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION"),],
+                        )
 
     config.add_data_dir('tests')
 

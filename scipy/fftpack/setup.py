@@ -25,10 +25,12 @@ def configuration(parent_package='',top_path=None):
         sources=sources,
         libraries=['dfftpack', 'fftpack'],
         include_dirs=['src'],
+        define_macros = [("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION")],
         depends=(dfftpack_src + fftpack_src))
 
     config.add_extension('convolve',
         sources=['convolve.pyf','src/convolve.c'],
+        define_macros = [("NPY_NO_DEPRECATED_API", "NPY_1_8_API_VERSION")],
         libraries=['dfftpack'],
         depends=dfftpack_src,
     )
