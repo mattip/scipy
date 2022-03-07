@@ -6,6 +6,7 @@ from numpy.testing import (assert_allclose,
 import pytest
 import numpy as np
 from scipy.optimize import direct, Bounds
+from scipy._lib._gcutils import IS_PYPY
 
 
 class TestDIRECT:
@@ -197,6 +198,7 @@ class TestDIRECT:
         assert result.status == 4
         assert result.success
 
+    @pytest.mark.skipif(IS_PYPY, reason="segfaults on PyPy windows")
     @pytest.mark.parametrize("locally_biased", [True, False])
     def test_segmentation_fault(self, locally_biased):
         # test that an excessive number of function evaluations
