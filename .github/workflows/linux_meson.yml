@@ -56,6 +56,8 @@ jobs:
         python -m pip install numpy setuptools==59.8.0 wheel cython pytest pytest-xdist pytest-timeout pybind11 mpmath pythran ninja meson click rich-click doit pydevtool
         # python -m pip install gmpy2   # does not work on PyPy
         python -m pip install git+https://github.com/cython/cython.git@0.29.x
+        # cloudpickle, needed by doit, does not work with PyPy
+        python -m pip install git+https://github.com/cloudpipe/cloudpickle.git@refs/pull/461/merge
 
     - name:  Prepare compiler cache
       id:    prep-ccache
